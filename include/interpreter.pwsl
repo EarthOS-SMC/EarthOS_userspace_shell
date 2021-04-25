@@ -1,0 +1,118 @@
+// EarthOS shell
+//
+//    Copyright (C) 2021  adazem009
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+linkdef/"_sep","sep"
+{
+	// _sep/[command],[output list]
+	getitem/"arg_1",1/"in1"
+	getitem/"arg_2",1/"in2"
+	getlength/in1/"len"
+	setlist/in2
+	set/"sp"," "/"q1",'"'/"q2","'"
+	set/"part",""/"i",0
+	if/[len < 1]
+		exit
+	endif
+	while/[i < len]
+		calc/"i=i+1"
+		getletter/in1,i/"let"
+		if/[let == sp]
+			append/part/in2
+			set/"part",""
+		else
+			if/[let == q1] or [let == q2]
+				set/"q",let/"let",""
+				while/[i < len] and [let != q]
+					calc/"i=i+1"
+					getletter/in1,i/"let"
+					if/[let != q]
+						set/"part",part,let
+					endif
+				endloop
+				if/[i == len] and [let != q]
+					set/"c",0
+					while/[c == 0]
+						print/\n,"> "
+						read/"","add"
+						print/add,\n
+						getlength/add/"len2"
+						set/"i2",0
+						repeat/len2
+							calc/"i2=i2+1"
+							getletter/add,i2/"let"
+							if/[let == q]
+								calc/"c=1-c"
+							else
+								set/"part",part,let
+							endif
+						endloop
+					endloop
+				endif
+			else
+				set/"part",part,let
+			endif
+		endif
+	endloop
+	append/part/in2
+}
+linkdef/"_run","run"
+{
+	// _run
+	// (no arguments)
+	getitem/"command",1/"bin"
+	if/[bin == "exit"]
+		exit
+	else
+		if/[bin == "help"]
+			print>
+				"EarthOS shell"
+				"(no help right now)"
+			<print
+		else
+			if/[bin != ""]
+				listtobin/"command"/"args"
+				bintolist/args/"argsl"
+				deleteitem/1/"argsl"
+				listtobin/"argsl"/"args"
+				getlistlength/"paths"/"len"
+				set/"c",0/"i",0
+				while/[i < len]
+					calc/"i=i+1"
+					getitem/"paths",i/"it"
+					ls/it/"files"
+					getindex/"files",bin/"ix"
+					if/[ix != 0]
+						set/"c",1/"fp",it,"/",bin
+						getfile/fp/"file"
+						listtobin/"file"/"fbin"
+						run/fbin,"wait",%whoami/args
+					endif
+				endloop
+				if/[c == 0]
+					// Binary not found, maybe it's a path
+					getfile/bin/"file"
+					listtobin/"file"/"fbin"
+					if/[fbin == ""]
+						print/bin,": command not found",\n
+					else
+						run/fbin,"wait",%whoami/args
+					endif
+				endif
+			endif
+		endif
+	endif
+}
