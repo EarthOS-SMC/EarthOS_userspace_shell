@@ -20,9 +20,9 @@
 include/"interpreter.pwsl"
 include/"env.pwsl"
 // Get release
-getfile/"/etc/release"/"file"
-getitem/"file",1/"uname"
-getitem/"file",2/"ver"
+//getfile/"/etc/release"/"file"
+//getitem/"file",1/"uname"
+//getitem/"file",2/"ver"
 // Get hostname
 getfile/"/etc/hostname"/"file"
 getitem/"file",1/"hostname"
@@ -36,8 +36,6 @@ if/[in != ""]
 	exit
 endif
 _getpaths/PATH/"paths"
-// Welcome message
-print/\b1,"Welcome to ",uname," ",ver,"!",\b0,\n,\n
 while/[true]
 	print/\c"000255000",%whoami,"@",hostname,\c255255255,":",\c"000000255",pwd
 	if/[%whoami == "root"]
