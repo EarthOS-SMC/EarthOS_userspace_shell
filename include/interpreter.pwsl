@@ -88,27 +88,39 @@ linkdef/"_run","run"
 				bintolist/args/"argsl"
 				deleteitem/1/"argsl"
 				listtobin/"argsl"/"args"
-				getlistlength/"paths"/"len"
-				set/"c",0/"i",0
-				while/[i < len]
-					calc/"i=i+1"
-					getitem/"paths",i/"it"
-					ls/it/"files"
-					getindex/"files",bin/"ix"
-					if/[ix != 0]
-						set/"c",1/"fp",it,"/",bin
-						getfile/fp/"file"
-						listtobin/"file"/"fbin"
-						run/fbin,"wait",%whoami/args
-						set/"i",len
+				// Check, if the command is a path
+				getletterindex/bin,"/"/"ix"
+				if/[ix == 0]
+					// It's a command
+					getlistlength/"paths"/"len"
+					set/"c",0/"i",0
+					while/[i < len]
+						calc/"i=i+1"
+						getitem/"paths",i/"it"
+						ls/it/"files"
+						getindex/"files",bin/"ix"
+						if/[ix != 0]
+							set/"c",1/"fp",it,"/",bin
+							// TO-DO: Check, if the file is executable.
+							getfile/fp/"file"
+							listtobin/"file"/"fbin"
+							run/fbin,"wait",%whoami/args
+							set/"i",len
+						endif
+					endloop
+					if/[c == 0]
+						// Binary not found
+						print/bin,": command not found",\n
 					endif
-				endloop
-				if/[c == 0]
-					// Binary not found, maybe it's a path
+				else
+					// It's a path
 					getfile/bin/"file"
 					listtobin/"file"/"fbin"
+					// TO-DO: Check, if the file actually exist.
+					//	  It might exist, but as an empty file.
+					// TO-DO: Check, if the file is executable.
 					if/[fbin == ""]
-						print/bin,": command not found",\n
+						print/bin,": No such file or directory",\n
 					else
 						run/fbin,"wait",%whoami/args
 					endif
