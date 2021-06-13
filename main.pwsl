@@ -22,8 +22,16 @@ include/"env.pwsl"
 //getitem/"file",1/"uname"
 //getitem/"file",2/"ver"
 // Get hostname
-getfile/"/etc/hostname"/"file"
-getitem/"file",1/"hostname"
+ftest/"/etc/hostname","r","f"/"test"
+set/"ret",%returnc
+if/[ret != ""]
+	// TO-DO: Display full error description instead of error code.
+	print/"shell: Failed to read /etc/hostname: ",ret,\n
+	set/"hostname","(none)"
+else
+	getfile/"/etc/hostname"/"file"
+	getitem/"file",1/"hostname"
+endif
 // Environment setup
 set/"pwd","/"/"PATH","/bin:/sbin"
 // Get args
