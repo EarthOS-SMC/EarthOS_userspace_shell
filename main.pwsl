@@ -51,7 +51,6 @@ while/[true]
 		print/"$ "
 	endif
 	read/"","input"
-	print/input,\n
 	// Process input
 	_sep/input/"command"
 	// Find and execute binary
