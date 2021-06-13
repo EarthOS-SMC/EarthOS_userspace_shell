@@ -42,8 +42,9 @@ if/[in != ""]
 	exit
 endif
 _getpaths/PATH/"paths"
+set/"user",%whoami,"@",hostname
 while/[true]
-	print/\c"000255000",%whoami,"@",hostname,\c255255255,":",\c"000000255",pwd
+	print/\c"000255000",user,\c255255255,":",\c"000000255",pwd
 	if/[%whoami == "root"]
 		print/"# "
 	else
