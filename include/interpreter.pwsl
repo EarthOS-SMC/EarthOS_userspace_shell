@@ -104,7 +104,7 @@ linkdef/"_run","run"
 							ftest/fp,"rx","f"/"test"
 							set/"ret",%returnc
 							if/[ret != ""]
-								// TO-DO: Display full error description instead of error code.
+								geterror/ret,0/"ret"
 								print/"shell: ",fp,": ",ret,\n
 							else
 								getfile/fp/"file"
@@ -123,7 +123,7 @@ linkdef/"_run","run"
 					ftest/bin,"rx","f"/"test"
 					set/"ret",%returnc
 					if/[ret != ""]
-						// TO-DO: Display full error description instead of error code.
+						geterror/ret,0/"ret"
 						print/bin,": ",ret,\n
 					else
 						getfile/bin/"file"
